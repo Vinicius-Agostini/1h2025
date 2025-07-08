@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação DOR e DOD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .slide-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px; /* Max width for desktop */
+            min-height: 500px; /* Minimum height for slides */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        .slide-content {
+            padding: 40px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+        }
+        .slide-content h1, .slide-content h2, .slide-content h3 {
+            color: #2c3e50; /* Dark blue-gray for headings */
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .slide-content h1 {
+            font-size: 2.5rem; /* Larger for main titles */
+        }
+        .slide-content h2 {
+            font-size: 2rem;
+        }
+        .slide-content h3 {
+            font-size: 1.75rem;
+            color: #34495e; /* Slightly lighter for subheadings */
+        }
+        .slide-content p, .slide-content ul, .slide-content li {
+            color: #555; /* Medium gray for text */
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .slide-content ul {
+            list-style-type: disc;
+            padding-left: 25px;
+        }
+        .slide-content li {
+            margin-bottom: 5px;
+        }
+        .slide-content strong {
+            color: #333;
+        }
+        .navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: #ecf0f1; /* Light gray for controls background */
+            border-top: 1px solid #e0e0e0;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+        .nav-button {
+            background-color: #3498db; /* Blue button */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .nav-button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+            transform: translateY(-2px);
+        }
+        .nav-button:disabled {
+            background-color: #bdc3c7; /* Lighter gray when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .slide-counter {
+            font-size: 1.1rem;
+            color: #7f8c8d; /* Gray for counter */
+            font-weight: 500;
+        }
+
+        /* Styles for the Gemini API generated content */
+        .gemini-feature-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+            text-align: center;
+        }
+        .gemini-generate-button {
+            background-color: #28a745; /* Green button */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gemini-generate-button:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: translateY(-1px);
+        }
+        .gemini-generate-button:disabled {
+            background-color: #95a5a6; /* Gray when disabled */
+            cursor: not-allowed;
+        }
+        .gemini-output-area {
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: #34495e;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            min-height: 80px; /* Minimum height for output area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gemini-output-area.loading {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .slide-content {
+                padding: 25px;
+            }
+            .slide-content h1 {
+                font-size: 2rem;
+            }
+            .slide-content h2 {
+                font-size: 1.75rem;
+            }
+            .slide-content h3 {
+                font-size: 1.5rem;
+            }
+            .slide-content p, .slide-content ul, .slide-content li {
+                font-size: 1rem;
+            }
+            .navigation-controls {
+                padding: 15px 25px;
+            }
+            .nav-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .slide-counter {
+                font-size: 0.9rem;
+            }
+            .gemini-generate-button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            .gemini-output-area {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide-content {
+                padding: 20px;
+            }
+            .slide-content h1 {
+                font-size: 1.75rem;
+            }
+            .slide-content h2 {
+                font-size: 1.5rem;
+            }
+            .slide-content h3 {
+                font-size: 1.25rem;
+            }
+            .slide-content p, .slide-content ul, .slide-content li {
+                font-size: 0.95rem;
+            }
+            .navigation-controls {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            .slide-counter {
+                order: -1; /* Move counter to top */
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="slide-container">
+        <div id="slide-display" class="slide-content">
+            <!-- Slide content will be rendered here by JavaScript -->
+            Carregando slides...
+        </div>
+        <div class="navigation-controls">
+            <button id="prev-button" class="nav-button" disabled>Anterior</button>
+            <span id="slide-counter" class="slide-counter">Slide 1 de 1</span>
+            <button id="next-button" class="nav-button">Próximo</button>
+        </div>
+    </div>
+
+    <script>
+        // Data for each slide, including Gemini API prompts for specific slides
+        const slidesData = [
+            // Slide 1
+            {
+                title: 'Otimizando o Fluxo de Trabalho: DOR e DOD em Times Scrum',
+                subtitle: 'Impulsionando a Eficiência e a Qualidade na Entrega de Valor',
+                content: '<p><strong>Nome do Apresentador / Data</strong></p>'
+            },
+            // Slide 2
+            {
+                title: 'Introdução ao Scrum',
+                content: `
+                    <ul>
+                        <li><strong>O que é Scrum?</strong> Breve revisão dos princípios, papéis (Product Owner, Scrum Master, Time de Desenvolvimento) e eventos (Sprint Planning, Daily Scrum, Sprint Review, Sprint Retrospective).</li>
+                        <li><strong>Por que Scrum?</strong> Focar na agilidade, colaboração, adaptabilidade e entrega iterativa de valor.</li>
+                        <li><strong>A Importância da Clareza:</strong> Como a comunicação clara e o alinhamento são vitais para o sucesso do Scrum e para evitar retrabalho.</li>
+                    </ul>
+                `
+            },
+            // Slide 3
+            {
+                title: 'O Desafio da Ambiguidade',
+                content: `
+                    <ul>
+                        <li><strong>Problema Comum:</strong> Falta de clareza nas histórias de usuário (User Stories) e nas entregas.</li>
+                        <li><strong>Consequências:</strong>
+                            <ul>
+                                <li>Refinamento ineficaz do Backlog.</li>
+                                <li>Início de trabalho em itens não preparados.</li>
+                                <li>Retrabalho e desperdício de tempo.</li>
+                                <li>Atrasos nas entregas e Sprint incompletas.</li>
+                                <li>Frustração e desmotivação do time.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Solução:</strong> Introdução de DOR e DOD como ferramentas essenciais para mitigar a ambiguidade e promover o alinhamento.</li>
+                    </ul>
+                `
+            },
+            // Slide 4
+            {
+                title: 'Ganhos com a Definição de "Pronto" (DOR - Definition of Ready)',
+                content: `
+                    <ul>
+                        <li><strong>Melhor Refinamento do Backlog:</strong> Histórias de usuário mais bem compreendidas, detalhadas e com escopo claro antes da Sprint.</li>
+                        <li><strong>Menos Desperdício:</strong> Evita que o time comece a trabalhar em itens que não estão prontos para serem desenvolvidos, reduzindo interrupções e trocas de contexto.</li>
+                        <li><strong>Previsibilidade Aprimorada:</strong> O time tem uma ideia mais clara do esforço, complexidade e tempo necessários para cada item, melhorando o planejamento da Sprint.</li>
+                        <li><strong>Aumento da Confiança do Time:</strong> Reduz a incerteza e aumenta a confiança do time na capacidade de entregar o que foi planejado.</li>
+                        <li><strong>Qualidade desde o Início:</strong> Foca na qualidade e na compreensão dos requisitos desde as fases iniciais do ciclo de desenvolvimento.</li>
+                    </ul>
+                `
+            },
+            // Slide 5
+            {
+                title: 'Ganhos com a Definição de "Concluído" (DOD - Definition of Done)',
+                content: `
+                    <ul>
+                        <li><strong>Consistência nas Entregas:</strong> Garante que todo item considerado "concluído" atenda a um padrão de qualidade mínimo e uniforme.</li>
+                        <li><strong>Redução de Débitos Técnicos:</strong> Incorpora verificações de qualidade, testes (unitários, integração, aceitação) e outras práticas que previnem o acúmulo de débitos.</li>
+                        <li><strong>Transparência e Responsabilidade:</strong> Todos no time e os stakeholders sabem exatamente o que significa "concluído", promovendo clareza e responsabilidade.</li>
+                        <li><strong>Feedback Mais Rápido e Efetivo:</strong> Permite que o time e os stakeholders validem o trabalho mais cedo e com confiança, pois os itens estão realmente prontos para uso.</li>
+                        <li><strong>Melhoria Contínua:</strong> Facilita a identificação de gargalos e áreas para otimização no processo de desenvolvimento e entrega.</li>
+                    </ul>
+                `
+            },
+            // Slide 6 - Como Criar uma DOR (com integração Gemini)
+            {
+                title: 'Como Criar uma DOR (Definition of Ready)',
+                content: `
+                    <p><strong>O que é DOR?</strong> Uma lista de critérios acordados pelo time que uma história de usuário (ou item do Backlog) precisa atender para ser considerada "pronta" para o desenvolvimento e ser selecionada para uma Sprint.</p>
+                    <p><strong>Processo de Criação (Colaborativo):</strong></p>
+                    <ul>
+                        <li><strong>Discussão em Grupo:</strong> O time de desenvolvimento, Product Owner e Scrum Master se reúnem para definir o que é essencial para iniciar o trabalho.</li>
+                        <li><strong>Critérios Comuns (Exemplos):</strong>
+                            <ul>
+                                <li><strong>Clara e Compreensível:</strong> A história é entendida por todos os membros do time.</li>
+                                <li><strong>Estimável:</strong> O time pode estimar o esforço necessário com confiança.</li>
+                                <li><strong>Testável:</strong> Os critérios de aceitação são claros, verificáveis e podem ser transformados em testes.</li>
+                                <li><strong>Pequena o Suficiente:</strong> O item pode ser concluído dentro de uma única Sprint.</li>
+                                <li><strong>Valor de Negócio Definido:</strong> O benefício para o usuário ou negócio é claro e justificado.</li>
+                                <li><strong>Dependências Resolvidas:</strong> Quaisquer dependências externas ou internas foram identificadas e tratadas.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Iteração e Refinamento:</strong> A DOR não é estática; ela deve evoluir com o tempo e com as lições aprendidas nas Retrospectivas.</li>
+                    </ul>
+                    <p><strong>Exemplo de DOR:</strong></p>
+                    <ul>
+                        <li>[ ] História de Usuário clara e concisa.</li>
+                        <li>[ ] Critérios de Aceitação definidos e compreendidos.</li>
+                        <li>[ ] Estimativa do time de desenvolvimento realizada.</li>
+                        <li>[ ] Dependências externas identificadas e mitigadas.</li>
+                        <li>[ ] Design de UI/UX (se aplicável) aprovado.</li>
+                    </ul>
+                `,
+                geminiFeature: true,
+                geminiPrompt: "Gere um exemplo conciso de uma Definição de Pronto (Definition of Ready) para uma história de usuário em um time Scrum que desenvolve um aplicativo de e-commerce. Inclua 5 a 7 critérios, formatados como uma lista numerada.",
+                geminiType: "DOR"
+            },
+            // Slide 7 - Como Criar um DOD (com integração Gemini)
+            {
+                title: 'Como Criar um DOD (Definition of Done)',
+                content: `
+                    <p><strong>O que é DOD?</strong> Uma lista de critérios acordados pelo time que um item (história de usuário, tarefa) precisa atender para ser considerado "concluído", liberável e pronto para ser apresentado na Sprint Review.</p>
+                    <p><strong>Processo de Criação (Colaborativo e Consensual):</strong></p>
+                    <ul>
+                        <li><strong>Colaboração do Time:</strong> Todos os membros do time de desenvolvimento, Product Owner e Scrum Master devem concordar com os critérios.</li>
+                        <li><strong>Critérios Comuns (Exemplos):</strong>
+                            <ul>
+                                <li><strong>Código Desenvolvido:</strong> O código-fonte foi escrito e implementado.</li>
+                                <li><strong>Testes Unitários Passando:</strong> Todos os testes unitários foram criados e estão passando.</li>
+                                <li><strong>Testes de Aceitação Realizados:</strong> Os critérios de aceitação foram verificados e aprovados (manualmente ou automaticamente).</li>
+                                <li><strong>Revisão de Código (Code Review):</strong> O código foi revisado e aprovado por outro membro do time.</li>
+                                <li><strong>Documentação Atualizada:</strong> Se aplicável (ex: documentação técnica, de usuário), foi atualizada.</li>
+                                <li><strong>Testes de Integração Passando:</strong> O item funciona corretamente com outros componentes do sistema.</li>
+                                <li><strong>Deploy para Ambiente de Testes/QA:</strong> O item foi implantado com sucesso em um ambiente de teste ou QA.</li>
+                                <li><strong>Sem Bugs Conhecidos:</strong> Não há bugs críticos ou de alta prioridade associados ao item.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Níveis de DOD:</strong> Pode haver um DOD para a história de usuário e um DOD mais abrangente para a "Sprint Concluída" ou "Release".</li>
+                    </ul>
+                    <p><strong>Exemplo de DOD:</strong></p>
+                    <ul>
+                        <li>[ ] Código implementado.</li>
+                        <li>[ ] Testes unitários 100% passando.</li>
+                        <li>[ ] Testes de aceitação executados e aprovados.</li>
+                        <li>[ ] Code Review realizado e aprovado.</li>
+                        <li>[ ] Nenhuma falha em testes de integração.</li>
+                        <li>[ ] Deploy para ambiente de Homologação/QA.</li>
+                        <li>[ ] Documentação técnica atualizada (se necessário).</li>
+                    </ul>
+                `,
+                geminiFeature: true,
+                geminiPrompt: "Gere um exemplo conciso de uma Definição de Concluído (Definition of Done) para uma história de usuário em um time Scrum que desenvolve um aplicativo de e-commerce. Inclua 5 a 7 critérios, formatados como uma lista numerada.",
+                geminiType: "DOD"
+            },
+            // Slide 8
+            {
+                title: 'Desafios e Próximos Passos',
+                content: `
+                    <p><strong>Desafios Comuns:</strong></p>
+                    <ul>
+                        <li>Resistência à mudança e ao novo processo.</li>
+                        <li>Definição inicial muito rigorosa (impedindo o fluxo) ou muito frouxa (não agregando valor).</li>
+                        <li>Manter a DOR e DOD atualizadas e relevantes.</li>
+                        <li>Garantir que todos no time comprem a ideia e sigam os critérios.</li>
+                    </ul>
+                    <p><strong>Dicas para o Sucesso:</strong></p>
+                    <ul>
+                        <li><strong>Comece pequeno:</strong> Não tente definir tudo de uma vez; evolua gradualmente.</li>
+                        <li><strong>Seja flexível:</strong> A DOR e DOD devem ser vivas e adaptáveis às necessidades do time e do produto.</li>
+                        <li><strong>Revise regularmente:</strong> Use as Retrospectivas para inspecionar e adaptar suas definições.</li>
+                        <li><strong>Comunique-se:</strong> Garanta que todos entendam o propósito e os benefícios.</li>
+                    </ul>
+                    <p><strong>Medindo o Impacto:</strong> Como acompanhar os benefícios de DOR e DOD?</p>
+                    <ul>
+                        <li>Redução de bugs em produção.</li>
+                        <li>Aumento do <em>throughput</em> (itens entregues por Sprint).</li>
+                        <li>Melhora na satisfação do cliente e do time.</li>
+                        <li>Menos retrabalho.</li>
+                    </ul>
+                `
+            },
+            // Slide 9
+            {
+                title: 'Conclusão',
+                content: `
+                    <ul>
+                        <li><strong>Recapitulação:</strong> DOR e DOD não são burocracia, mas sim ferramentas poderosas para times Scrum que buscam clareza, eficiência e qualidade.</li>
+                        <li><strong>Benefícios Chave:</strong> Melhor planejamento, maior previsibilidade, entregas consistentes e redução de desperdício.</li>
+                        <li><strong>Chamada para Ação:</strong> Incentive a equipe a discutir, adaptar e implementar DOR e DOD em seu próprio fluxo de trabalho.</li>
+                        <li><strong>Perguntas e Respostas.</strong></li>
+                    </ul>
+                `
+            }
+        ];
+
+        let currentSlideIndex = 0;
+        const slideDisplay = document.getElementById('slide-display');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const slideCounter = document.getElementById('slide-counter');
+
+        /**
+         * Renders the current slide content based on the currentSlideIndex.
+         * Dynamically adds a Gemini API integration button if the slide has a 'geminiFeature'.
+         * @param {number} index - The index of the slide to render.
+         */
+        function renderSlide(index) {
+            const slide = slidesData[index];
+            let htmlContent = '';
+
+            if (slide.title) {
+                // For slide 1, use h1 for main title, h2 for subtitle
+                if (index === 0) {
+                    htmlContent += `<h1 class="text-center">${slide.title}</h1>`;
+                    if (slide.subtitle) {
+                        htmlContent += `<h2 class="text-center text-xl font-normal text-gray-600 mb-4">${slide.subtitle}</h2>`;
+                    }
+                } else {
+                    // For other slides, use h2 for main title
+                    htmlContent += `<h2>${slide.title}</h2>`;
+                }
+            }
+            if (slide.content) {
+                htmlContent += slide.content;
+            }
+
+            // Add Gemini API feature section if enabled for this slide
+            if (slide.geminiFeature) {
+                const buttonText = slide.geminiType === "DOR" ? "✨ Gerar Exemplo de DOR" : "✨ Gerar Exemplo de DOD";
+                htmlContent += `
+                    <div class="gemini-feature-section w-full">
+                        <button id="gemini-generate-button" class="gemini-generate-button">
+                            ${buttonText}
+                        </button>
+                        <div id="gemini-output" class="gemini-output-area">
+                            Clique no botão para gerar um exemplo.
+                        </div>
+                    </div>
+                `;
+            }
+
+            slideDisplay.innerHTML = htmlContent;
+            updateNavigation();
+
+            // Attach event listener for the Gemini button after it's rendered
+            if (slide.geminiFeature) {
+                const geminiButton = document.getElementById('gemini-generate-button');
+                const geminiOutput = document.getElementById('gemini-output');
+                geminiButton.addEventListener('click', () => {
+                    generateExample(slide.geminiPrompt, geminiButton, geminiOutput);
+                });
+            }
+        }
+
+        /**
+         * Updates the state of navigation buttons and the slide counter.
+         */
+        function updateNavigation() {
+            prevButton.disabled = currentSlideIndex === 0;
+            nextButton.disabled = currentSlideIndex === slidesData.length - 1;
+            slideCounter.textContent = `Slide ${currentSlideIndex + 1} de ${slidesData.length}`;
+        }
+
+        /**
+         * Calls the Gemini API to generate an example based on the provided prompt.
+         * Updates the UI with loading state and the generated content.
+         * @param {string} prompt - The prompt to send to the Gemini LLM.
+         * @param {HTMLButtonElement} buttonElement - The button element to disable/enable.
+         * @param {HTMLElement} outputElement - The element to display the output.
+         */
+        async function generateExample(prompt, buttonElement, outputElement) {
+            buttonElement.disabled = true;
+            outputElement.classList.add('loading');
+            outputElement.textContent = 'Carregando exemplo... Por favor, aguarde...';
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Leave as empty string; Canvas will provide at runtime.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Erro na API Gemini: ${response.status} - ${errorData.error.message || response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    outputElement.textContent = text;
+                } else {
+                    outputElement.textContent = 'Não foi possível gerar um exemplo. Tente novamente.';
+                }
+            } catch (error) {
+                console.error('Erro ao chamar a API Gemini:', error);
+                outputElement.textContent = `Erro: ${error.message}. Não foi possível gerar o exemplo.`;
+            } finally {
+                buttonElement.disabled = false;
+                outputElement.classList.remove('loading');
+            }
+        }
+
+
+        // Event listeners for navigation buttons
+        prevButton.addEventListener('click', () => {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                renderSlide(currentSlideIndex);
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentSlideIndex < slidesData.length - 1) {
+                currentSlideIndex++;
+                renderSlide(currentSlideIndex);
+            }
+        });
+
+        // Initial render when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSlide(currentSlideIndex);
+        });
+    </script>
+</body>
+</html>
